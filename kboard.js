@@ -135,7 +135,10 @@ const Keyboard = {
     },
 
     _triggerEvent(handlerName) {
-        console.log("Event Triggered! Event Name: " + handlerName);
+        // console.log("Event Triggered! Event Name: " + handlerName);
+        if (typeof this.eventHandlers[handlerName] == "function") {
+            this.eventHandlers[handlerName](this.properties.value);
+        }
     },
 
     _toggleCapsLock() {
@@ -150,10 +153,18 @@ const Keyboard = {
     },
 
     open(initialValue, oninput, onclose) {
+        this.properties.value = initialValue || "";
+        this.eventHandlers.oninput = oninput;
+        this.eventHandlers.onclose = onclose;
+        this.elements.main.classList.remove("keyboard--hidden");
 
     },
 
     close() {
+        this.value = "";
+        this.eventHandlers.oninput = oninput;
+        this.eventHandlers.onclose = onclose;
+        this.elements.main.classList.add("keyboard--hidden");
 
     }
 
@@ -161,5 +172,10 @@ const Keyboard = {
 
 window.addEventListener("DOMContentLoaded", function() {
     Keyboard.init();
+    Keyboard.open("dcode", function(currentValue) {
+        console.log("value changed! here it is: " + currentValue);
+    }, function(currentValue) {
+        console.log("keyboard closed! Finishing value: " + currentValue);
+    });
 
 });
