@@ -23,6 +23,7 @@ const Keyboard = {
         //Setup main elements
         this.elements.main.classList.add("keyboard", "1keyboard--hidden");
         this.elements.keysContainer.classList.add("keyboard__keys");
+        this.elements.keysContainer.appendChild(this._createKeys());
 
         // Add to DOM
         this.elements.main.appendChild(this.elements.keysContainer);
@@ -109,8 +110,26 @@ const Keyboard = {
                     });
 
                     break;
+
+                    default:
+                    keyElement.textContent = key.toLowerCase();
+
+                    keyElement.addEventListener("click", () => {
+                        this.properties.value += this.properties.capsLock ? key.toUpperCase() : key.toLowerCase();
+                        this._triggerEvent("oninput");
+                    });
+
+                    break;
+            }
+
+            fragment.appendChild(keyElement);
+
+            if (insertLineBreak) {
+                fragment.appendChild(document.createElement("br"));
             }
         });
+        
+        return fragment;
     },
 
     _triggerEvent(handlerName) {
